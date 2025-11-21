@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/admin/AdminNavbar';
 import Footer from '../../components/footer';
-import { getProductoById } from '../../services/producto_service';
+import { getProductoById, createProducto, updateProducto } from '../../services/producto_service';
 
 const ProductForm = () => {
     const { id } = useParams();
@@ -44,6 +44,33 @@ const ProductForm = () => {
         }
     }, [isEditing, id]);
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        try {
+            const payload = {
+                nombre: formData.nombre,
+                descripcion: formData.descripcion,
+                precio: parseFloat(formData.precio),
+                categoria: formData.categoria,
+                image_path: formData.image_path || null,
+                disponibilidad: formData.disponibilidad
+            };
+
+            if (isEditing && id) {
+                await updateProducto(Number(id), payload);
+                alert('Producto actualizado correctamente');
+            } else {
+                await createProducto(payload);
+                alert('Producto creado correctamente');
+            }
+            navigate('/admin/menu');
+        } catch (error) {
+            console.error("Error guardando producto:", error);
+            alert('Error al guardar el producto. Verifica la consola para más detalles.');
+        }
+    };
+
     const categories = [
         "Promoción", "Brasas", "Broaster", "Parrillas", "Menu",
         "Hamburguesas", "Piqueos", "Ensaladas", "Postres", "Bebidas", "Acompañamiento"
@@ -68,7 +95,7 @@ const ProductForm = () => {
                     </div>
 
                     {/* Formulario */}
-                    <form className="p-6 space-y-6">
+                    <form className="p-6 space-y-6" onSubmit={handleSubmit}>
                         
                         {/* Imagen del Producto */}
                         <div>

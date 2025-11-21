@@ -48,3 +48,26 @@ export const getProductoById = async (id: number): Promise<Producto | null> => {
   if (error) throw error
   return data as Producto
 }
+
+export const createProducto = async (producto: Omit<Producto, 'productoid'>): Promise<Producto | null> => {
+  const { data, error } = await supabase
+    .from('producto')
+    .insert([producto])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Producto
+}
+
+export const updateProducto = async (id: number, producto: Partial<Producto>): Promise<Producto | null> => {
+  const { data, error } = await supabase
+    .from('producto')
+    .update(producto)
+    .eq('productoid', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as Producto
+}
