@@ -17,7 +17,7 @@ const Navbar = () => {
     // 2. Inicializamos el hook de navegación
     const navigate = useNavigate();
 
-    const handleSearch = (e) => {
+    const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         // Solo buscamos si el usuario escribió algo y no son solo espacios
         if (query.trim()) {

@@ -23,7 +23,7 @@ export const getProductosByCategoria = async (categoria: string): Promise<Produc
   return (data as Producto[]) || []
 }
 
-export const searchProductos = async (termino) => {
+export const searchProductos = async (termino: string) => {
     // Si tienes una API real de búsqueda:
     // const response = await fetch(`T_URL/productos/buscar?q=${termino}`);
     // return await response.json();
@@ -34,6 +34,17 @@ export const searchProductos = async (termino) => {
     
     return todos.filter(p => 
         p.nombre.toLowerCase().includes(terminoLower) || 
-        p.descripcion.toLowerCase().includes(terminoLower)
+        (p.descripcion && p.descripcion.toLowerCase().includes(terminoLower))
     );
-};
+}
+
+export const getProductoById = async (id: number): Promise<Producto | null> => {
+  const { data, error } = await supabase
+    .from('producto')
+    .select('*')
+    .eq('productoid', id)
+    .single()
+
+  if (error) throw error
+  return data as Producto
+}
